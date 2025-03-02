@@ -1,6 +1,6 @@
 const socket = io();
 
-let playerRole = ""; // will be set on game start
+let playerRole = ""; // Will be set when the game starts
 let currentRoom = "";
 
 // DOM Elements
@@ -31,8 +31,8 @@ joinBtn.addEventListener("click", () => {
     currentRoom = roomName;
     socket.emit("joinRoom", roomName, playerName);
     roomDisplay.textContent = roomName;
-
-    // Simple fade transition from lobby to game
+    
+    // Animate transition from lobby to game screen
     lobbyDiv.classList.add("animate__fadeOut");
     setTimeout(() => {
       lobbyDiv.classList.add("d-none");
@@ -46,7 +46,6 @@ joinBtn.addEventListener("click", () => {
 startGameBtn.addEventListener("click", () => {
   socket.emit("startGame", currentRoom);
 });
-
 endGameBtn.addEventListener("click", () => {
   socket.emit("endGame", currentRoom);
 });
@@ -56,18 +55,18 @@ startVotingBtn.addEventListener("click", () => {
   socket.emit("startVoting", currentRoom);
   endVotingBtn.classList.remove("d-none");
 });
-
 endVotingBtn.addEventListener("click", () => {
   socket.emit("endVoting", currentRoom);
   endVotingBtn.classList.add("d-none");
 });
 
-// Chat send
+// Chat send event
 sendBtn.addEventListener("click", sendMessage);
 chatInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
+  if (e.key === "Enter") {
+    sendMessage();
+  }
 });
-
 function sendMessage() {
   const msg = chatInput.value.trim();
   if (msg) {
@@ -78,19 +77,30 @@ function sendMessage() {
 
 /* 
   showResultPopup:
-  - Creates a container holding all popup elements.
-  - This container includes:
+  - Creates a container (resultContainer) holding all result popup elements.
+  - The container includes:
       • A full-screen dark overlay.
       • A centered popup box showing "You Win!" (green) or "You Lose!" (red).
       • Below that, an element showing:
-              Imposter:
-              
-              [Imposter Name]
+             Imposter:
+             
+             [Imposter Name]
   - Confetti is triggered for winners.
   - The entire container is removed after 2 seconds.
+  - Responsive adjustments are applied for mobile devices (window.innerWidth < 480).
 */
 function showResultPopup(isWinner, imposterName) {
-  // Create a container for all popup elements.
+  // Determine if we're on a mobile screen
+  const isMobile = window.innerWidth < 480;
+
+  // Responsive style variables
+  const popupPadding = isMobile ? "20px 40px" : "40px 80px";
+  const popupFontSize = isMobile ? "2.5em" : "4em";
+  const infoFontSize = isMobile ? "1.5em" : "2em";
+  const popupTop = isMobile ? "35%" : "40%";
+  const infoTop = isMobile ? "55%" : "65%";
+
+  // Create a container for all result elements
   const resultContainer = document.createElement("div");
   resultContainer.style.position = "fixed";
   resultContainer.style.top = "0";
@@ -100,7 +110,7 @@ function showResultPopup(isWinner, imposterName) {
   resultContainer.style.zIndex = "9997";
   document.body.appendChild(resultContainer);
 
-  // Create dark overlay.
+  // Create the dark overlay
   const overlay = document.createElement("div");
   overlay.style.position = "absolute";
   overlay.style.top = "0";
@@ -114,16 +124,16 @@ function showResultPopup(isWinner, imposterName) {
   overlay.getBoundingClientRect();
   overlay.style.opacity = "1";
 
-  // Wait 0.5 seconds, then show popup and info.
+  // After 0.5 seconds, display the popup and imposter info
   setTimeout(() => {
-    // Create popup box.
+    // Create the popup box
     const popup = document.createElement("div");
     popup.style.position = "absolute";
-    popup.style.top = "40%"; // slightly higher to leave room below
+    popup.style.top = popupTop;
     popup.style.left = "50%";
     popup.style.transform = "translate(-50%, -50%)";
-    popup.style.padding = "40px 80px";
-    popup.style.fontSize = "4em";
+    popup.style.padding = popupPadding;
+    popup.style.fontSize = popupFontSize;
     popup.style.fontFamily = "'Press Start 2P', cursive";
     popup.style.color = "#fff";
     popup.style.zIndex = "9999";
@@ -145,23 +155,23 @@ function showResultPopup(isWinner, imposterName) {
     popup.getBoundingClientRect();
     popup.style.opacity = "1";
 
-    // Create imposter info element (below popup)
+    // Create the imposter info element below the popup
     const imposterInfo = document.createElement("div");
     imposterInfo.style.position = "absolute";
-    imposterInfo.style.top = "65%"; // position below popup
+    imposterInfo.style.top = infoTop;
     imposterInfo.style.left = "50%";
     imposterInfo.style.transform = "translate(-50%, -50%)";
-    imposterInfo.style.fontSize = "2em";
+    imposterInfo.style.fontSize = infoFontSize;
     imposterInfo.style.fontFamily = "'Press Start 2P', cursive";
     imposterInfo.style.color = "#fff";
     imposterInfo.style.textAlign = "center";
     imposterInfo.style.zIndex = "9999";
     imposterInfo.style.lineHeight = "1.2";
-    // Two <br> tags for extra spacing.
+    // Add extra spacing between "Imposter:" and the name.
     imposterInfo.innerHTML = "Imposter:<br><br>" + imposterName;
     resultContainer.appendChild(imposterInfo);
 
-    // Trigger confetti for winners.
+    // Trigger confetti if winner
     if (isWinner) {
       confetti({
         particleCount: 200,
@@ -171,15 +181,15 @@ function showResultPopup(isWinner, imposterName) {
       });
     }
 
-    // Remove the entire container after 2 seconds.
+    // Remove the entire container after 2 seconds
     setTimeout(() => {
+      console.log("Removing result popup container.");
       resultContainer.remove();
     }, 2000);
   }, 500);
 }
 
 // Socket event handlers
-
 socket.on("updatePlayers", (players, hostId) => {
   playersList.innerHTML =
     `<h4>Players:</h4><ul class="list-group">` +
@@ -219,7 +229,7 @@ socket.on("votingStarted", (players) => {
   console.log("Voting started event received with players:", players);
   votingPanel.classList.remove("d-none");
   votingCandidates.innerHTML = "";
-  // Create a button for each candidate with vote count 0.
+  // Create a candidate button for each player with vote count 0.
   Object.entries(players).forEach(([id, name]) => {
     const candidateButton = document.createElement("button");
     candidateButton.className = "list-group-item list-group-item-action";
