@@ -1,6 +1,6 @@
 const socket = io();
 
-let playerRole = ""; // will be set on game start
+let playerRole = ""; // will be set when the game starts
 let currentRoom = "";
 
 // DOM Elements
@@ -23,7 +23,7 @@ const chatDiv = document.getElementById("chat");
 const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 
-// Join room and switch to game screen
+// Join room and switch screens
 joinBtn.addEventListener("click", () => {
   const playerName = playerNameInput.value.trim();
   const roomName = roomNameInput.value.trim();
@@ -31,8 +31,7 @@ joinBtn.addEventListener("click", () => {
     currentRoom = roomName;
     socket.emit("joinRoom", roomName, playerName);
     roomDisplay.textContent = roomName;
-
-    // Simple fade transition from lobby to game
+    
     lobbyDiv.classList.add("animate__fadeOut");
     setTimeout(() => {
       lobbyDiv.classList.add("d-none");
@@ -42,7 +41,7 @@ joinBtn.addEventListener("click", () => {
   }
 });
 
-// Start and end game events
+// Game control events
 startGameBtn.addEventListener("click", () => {
   socket.emit("startGame", currentRoom);
 });
@@ -51,7 +50,6 @@ endGameBtn.addEventListener("click", () => {
   socket.emit("endGame", currentRoom);
 });
 
-// Start and end voting events
 startVotingBtn.addEventListener("click", () => {
   socket.emit("startVoting", currentRoom);
   endVotingBtn.classList.remove("d-none");
@@ -62,7 +60,6 @@ endVotingBtn.addEventListener("click", () => {
   endVotingBtn.classList.add("d-none");
 });
 
-// Chat send
 sendBtn.addEventListener("click", sendMessage);
 chatInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
@@ -76,21 +73,21 @@ function sendMessage() {
   }
 }
 
-/* 
+/*
   showResultPopup:
-  - Creates a container holding all popup elements.
-  - This container includes:
+  - Creates one container (resultContainer) that holds:
       • A full-screen dark overlay.
-      • A centered popup box showing "You Win!" (green) or "You Lose!" (red).
+      • A centered popup box ("You Win!" in green or "You Lose!" in red).
       • Below that, an element showing:
-              Imposter:
-              
-              [Imposter Name]
-  - Confetti is triggered for winners.
-  - The entire container is removed after 2 seconds.
+             Imposter:
+             
+             [Imposter Name]
+  - Triggers confetti if the user wins.
+  - After 2 seconds, removes the entire container using parentNode.removeChild.
+  - Also removes any leftover confetti canvas elements.
 */
 function showResultPopup(isWinner, imposterName) {
-  // Create a container for all popup elements.
+  // Create container
   const resultContainer = document.createElement("div");
   resultContainer.style.position = "fixed";
   resultContainer.style.top = "0";
@@ -100,7 +97,7 @@ function showResultPopup(isWinner, imposterName) {
   resultContainer.style.zIndex = "9997";
   document.body.appendChild(resultContainer);
 
-  // Create dark overlay.
+  // Create dark overlay
   const overlay = document.createElement("div");
   overlay.style.position = "absolute";
   overlay.style.top = "0";
@@ -114,12 +111,12 @@ function showResultPopup(isWinner, imposterName) {
   overlay.getBoundingClientRect();
   overlay.style.opacity = "1";
 
-  // Wait 0.5 seconds, then show popup and info.
+  // Wait 0.5s then show popup and imposter info
   setTimeout(() => {
-    // Create popup box.
+    // Create popup box
     const popup = document.createElement("div");
     popup.style.position = "absolute";
-    popup.style.top = "40%"; // slightly higher to leave room below
+    popup.style.top = "40%";
     popup.style.left = "50%";
     popup.style.transform = "translate(-50%, -50%)";
     popup.style.padding = "40px 80px";
@@ -133,7 +130,7 @@ function showResultPopup(isWinner, imposterName) {
     popup.style.boxShadow = "0 0 30px rgba(255, 255, 255, 0.8)";
     popup.style.opacity = "0";
     popup.style.transition = "opacity 0.5s ease";
-
+    
     if (isWinner) {
       popup.innerText = "You Win!";
       popup.style.background = "linear-gradient(45deg, #00ff00, #008000)";
@@ -145,10 +142,10 @@ function showResultPopup(isWinner, imposterName) {
     popup.getBoundingClientRect();
     popup.style.opacity = "1";
 
-    // Create imposter info element (below popup)
+    // Create imposter info element below popup
     const imposterInfo = document.createElement("div");
     imposterInfo.style.position = "absolute";
-    imposterInfo.style.top = "65%"; // position below popup
+    imposterInfo.style.top = "65%";
     imposterInfo.style.left = "50%";
     imposterInfo.style.transform = "translate(-50%, -50%)";
     imposterInfo.style.fontSize = "2em";
@@ -157,11 +154,10 @@ function showResultPopup(isWinner, imposterName) {
     imposterInfo.style.textAlign = "center";
     imposterInfo.style.zIndex = "9999";
     imposterInfo.style.lineHeight = "1.2";
-    // Two <br> tags for extra spacing.
     imposterInfo.innerHTML = "Imposter:<br><br>" + imposterName;
     resultContainer.appendChild(imposterInfo);
 
-    // Trigger confetti for winners.
+    // Trigger confetti for winners
     if (isWinner) {
       confetti({
         particleCount: 200,
@@ -171,9 +167,13 @@ function showResultPopup(isWinner, imposterName) {
       });
     }
 
-    // Remove the entire container after 2 seconds.
+    // Remove the container after 2 seconds
     setTimeout(() => {
-      resultContainer.remove();
+      if (resultContainer && resultContainer.parentNode) {
+        resultContainer.parentNode.removeChild(resultContainer);
+      }
+      // Remove any leftover confetti canvases
+      document.querySelectorAll("canvas").forEach((canvas) => canvas.remove());
     }, 2000);
   }, 500);
 }
@@ -187,16 +187,15 @@ socket.on("updatePlayers", (players, hostId) => {
       .map((name) => `<li class="list-group-item">${name}</li>`)
       .join("") +
     `</ul>`;
-  socket.id === hostId
-    ? (hostControls.style.display = "block")
-    : (hostControls.style.display = "none");
+  // Always show host controls for testing
+  hostControls.style.display = "block";
 });
 
 socket.on("gameStarted", (data) => {
   playerRole = data.role;
   if (data.role === "imposter") {
     gameInfo.innerHTML =
-      `<div class="alert alert-warning animate__animated animate__fadeIn">You are the imposter! Try to hide your identity.</div>`;
+      `<div class="alert alert-warning animate__animated animate__fadeIn">You are the imposter! Hide your identity.</div>`;
   } else {
     gameInfo.innerHTML =
       `<div class="alert alert-info animate__animated animate__fadeIn">Your word is: <strong>${data.word}</strong></div>`;
@@ -219,7 +218,6 @@ socket.on("votingStarted", (players) => {
   console.log("Voting started event received with players:", players);
   votingPanel.classList.remove("d-none");
   votingCandidates.innerHTML = "";
-  // Create a button for each candidate with vote count 0.
   Object.entries(players).forEach(([id, name]) => {
     const candidateButton = document.createElement("button");
     candidateButton.className = "list-group-item list-group-item-action";
@@ -228,7 +226,6 @@ socket.on("votingStarted", (players) => {
     candidateButton.textContent = `${name} (0)`;
     candidateButton.addEventListener("click", () => {
       socket.emit("castVote", currentRoom, id);
-      // Allow vote changes; buttons remain enabled.
     });
     votingCandidates.appendChild(candidateButton);
   });
