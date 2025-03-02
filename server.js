@@ -15,19 +15,7 @@ let rooms = {};
 
 // A huge list of place words for more variety in the game
 function getRandomWord() {
-  const words = [
-    "airport", "farm", "beach", "city", "mountain", "forest", "desert",
-    "library", "museum", "restaurant", "cafe", "park", "stadium", "zoo",
-    "aquarium", "mall", "castle", "temple", "mosque", "bridge", "harbor",
-    "island", "cave", "village", "market", "tower", "observatory", "hospital",
-    "police station", "fire station", "school", "college", "university", "factory",
-    "warehouse", "office", "garden", "amusement park", "aqueduct", "airport lounge",
-    "railway station", "bus station", "subway station", "barracks", "shelter",
-    "diner", "winery", "brewery", "gallery", "theater", "concert hall", "carnival",
-    "farmers' market", "waterfront", "marina", "campground", "campsite", "boutique", "lounge", "rooftop", "mansion",
-    "silo", "windmill", "mill", "granary", "courthouse", "post office", "train depot",
-    "bus depot", "festival ground"
-  ];
+  const words = ["apple","banana","orange","grape","pear","peach","plum","cherry","berry","melon","pineapple","mango","kiwi","lemon","lime","tomato","cucumber","carrot","potato","broccoli","spinach","lettuce","pepper","onion","garlic","pumpkin","zucchini","corn","bean","pea","dog","cat","bird","fish","horse","cow","pig","sheep","goat","duck","rabbit","hamster","squirrel","bear","lion","tiger","elephant","giraffe","zebra","monkey","kangaroo","panda","wolf","fox","dolphin","shark","whale","seal","otter","penguin","tree","flower","leaf","bush","grass","rock","mountain","river","lake","ocean","beach","island","forest","desert","volcano","waterfall","cave","cloud","rain","snow","wind","storm","rainbow","sun","moon","star","sky","comet","galaxy","planet","house","home","room","door","window","wall","floor","roof","bed","chair","table","sofa","lamp","clock","book","pen","pencil","paper","crayon","marker","notebook","bag","key","phone","computer","TV","radio","camera","fridge","oven","bread","cheese","milk","yogurt","egg","chicken","beef","pizza","burger","sandwich","hotdog","fries","salad","soup","pasta","rice","cake","cookie","candy","pie","muffin","icecream","donut","pudding","chocolate","smoothie","cereal","popcorn","sausage","bacon","car","bus","train","plane","bike","scooter","truck","van","boat","ship","rocket","submarine","helicopter","taxi","tram","ball","bat","glove","kite","doll","puzzle","game","drum","guitar","piano","skateboard","rollerblade","frisbee","jumprope","tricycle","yo-yo","bowling","chess","soccer","basketball","hat","shirt","pants","dress","shoes","socks","boots","coat","jacket","scarf","cap","belt","mittens","sweater","shorts","skirt","tie","umbrella","chalk","board","ruler","backpack","binder","paperclip","scissors","pencilcase","textbook","highlighter","stapler","calculator","globe","folder","sharpener","notepad","compass","protractor","chalkboard","laptop","tablet","printer","scanner","library","museum","theater","restaurant","cafe","bakery","supermarket","market","store","hospital","police","firetruck","ambulance","postoffice","bank","park","zoo","aquarium","mall","fountain","statue","mirror","basket","box","ladder","bench","alarm","fan","comb","jar","keychain","cushion","pillow","blanket","towel","curtain","suitcase","wallet","postcard","letter","envelope","stamp","ticket","map","photo","sculpture","painting","sticker","poster","castle","kingdom","knight","dragon","wizard","potion","treasure","mystery","legend","fairy","ghost","tornado","hurricane","asteroid","nebula","orbit","eclipse","horizon","mosaic","labyrinth","riddle","enigma","carnival","festival","myth"];
   return words[Math.floor(Math.random() * words.length)];
 }
 
