@@ -83,7 +83,7 @@ function sendMessage() {
          Imposter:
          [Imposter Name]
   - Confetti is triggered for winners.
-  - All elements disappear after 5 seconds.
+  - All elements disappear after 2 seconds.
 */
 function showResultPopup(isWinner, imposterName) {
   // Create dark overlay with fade-in effect
@@ -150,7 +150,7 @@ function showResultPopup(isWinner, imposterName) {
     imposterInfo.style.textAlign = "center";
     imposterInfo.style.zIndex = "9999";
     imposterInfo.style.lineHeight = "1.2";
-    // Extra spacing between "Imposter:" and the name
+    // Extra spacing between "Imposter:" and the name using two <br> tags.
     imposterInfo.innerHTML = "Imposter:<br><br>" + imposterName;
     
     document.body.appendChild(imposterInfo);
@@ -165,12 +165,12 @@ function showResultPopup(isWinner, imposterName) {
       });
     }
     
-    // Remove overlay, popup, and imposterInfo after 5 seconds from popup appearance
+    // Remove overlay, popup, and imposterInfo after 2 seconds from popup appearance
     setTimeout(() => {
       overlay.remove();
       popup.remove();
       imposterInfo.remove();
-    }, 5000);
+    }, 2000);
     
   }, 500);
 }
