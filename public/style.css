@@ -1,4 +1,4 @@
-/* Reset default margins and paddings */
+/* Reset default margins, paddings, and box-sizing */
 * {
   margin: 0;
   padding: 0;
@@ -10,15 +10,12 @@ html, body {
   height: 100%;
 }
 
-/* Use Flexbox to center content vertically and horizontally */
+/* Use standard flow so content can scroll if needed */
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background: #000;
   font-family: 'Press Start 2P', cursive;
   color: #fff;
+  line-height: 1.5;
 }
 
 /* Particles.js background positioned behind content */
@@ -48,7 +45,7 @@ h1, h2, h4 {
   text-shadow: 2px 2px 4px #000;
 }
 
-/* Make buttons full-width with spacing */
+/* Ensure buttons are visible and spaced */
 .btn {
   width: 100%;
   margin-bottom: 10px;
@@ -63,11 +60,11 @@ h1, h2, h4 {
   overflow-y: scroll;
 }
 
-/* Responsive styling for mobile devices */
+/* Responsive adjustments for mobile devices */
 @media (max-width: 480px) {
   .container {
     padding: 10px;
-    margin: 10px;
+    margin: 10px auto;
   }
   
   h1, h2, h4 {
