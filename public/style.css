@@ -1,13 +1,19 @@
-/* Ensure the html and body take up the full viewport height */
-html, body {
-  height: 100%;
+/* Reset default margins and paddings */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* Center everything using Flexbox */
+/* Ensure html and body take full height */
+html, body {
+  height: 100%;
+}
+
+/* Use Flexbox to center content vertically and horizontally */
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: #000;
@@ -15,95 +21,62 @@ body {
   color: #fff;
 }
 
+/* Particles.js background positioned behind content */
+#particles-js {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
 /* Main container styling */
 .container {
   background: rgba(0, 0, 0, 0.7);
+  margin: 20px auto;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 20px #fff;
-  margin: 0; /* Remove default top margin */
+  width: 90%;
   max-width: 800px;
-  width: 95%;
 }
 
-/* Override Bootstrap mt-5 if present */
-.mt-5 {
-  margin-top: 0 !important;
-}
-
-/* Retro text styling for headers */
-h1, h2 {
+/* Header styling */
+h1, h2, h4 {
+  text-align: center;
   text-shadow: 2px 2px 4px #000;
 }
 
-/* Override form and button styles for consistency */
-.form-control, .btn {
-  font-family: 'Press Start 2P', cursive;
+/* Make buttons full-width with spacing */
+.btn {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-/* Customized button colors for a game-like palette */
-.btn-primary {
-  background-color: #1a73e8;
-  border-color: #1a73e8;
-}
-
-.btn-success {
-  background-color: #34a853;
-  border-color: #34a853;
-}
-
-.btn-danger {
-  background-color: #ea4335;
-  border-color: #ea4335;
-}
-
-/* Chat box with a subtle, futuristic overlay */
+/* Chat box styling */
 #chat {
   background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
   border: 1px solid #fff;
-  width: 100%;
+  padding: 10px;
   max-height: 300px;
   overflow-y: scroll;
 }
 
-/* Media queries for responsiveness */
-
-/* For screens up to 768px (tablets and small desktops) */
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-    margin: 10px auto;
-  }
-  
-  h1, h2 {
-    font-size: 1.8em;
-  }
-  
-  .btn {
-    font-size: 0.9em;
-    padding: 8px 12px;
-  }
-  
-  #chat {
-    max-height: 220px;
-  }
-}
-
-/* For screens up to 480px (mobile devices) */
+/* Responsive styling for mobile devices */
 @media (max-width: 480px) {
   .container {
     padding: 10px;
-    margin: 10px auto;
+    margin: 10px;
   }
   
-  h1, h2 {
-    font-size: 1.5em;
+  h1, h2, h4 {
+    font-size: 1.2em;
   }
   
   .btn {
     font-size: 0.8em;
-    padding: 6px 10px;
+    padding: 6px;
   }
   
   #chat {
